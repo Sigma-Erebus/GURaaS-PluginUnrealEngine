@@ -70,21 +70,22 @@ class GURAAS_API UGLogChannel : public UObject
 		
 public:
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "GURaaS")
 		virtual void Log(EGURaaSVerboseLevel VerboseLevel, const FString& Message, const FString& Tag1, const FString& Tag2, const FString& Tag3) {};
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "GURaaS")
 		virtual void StartSession(FSessionInfo SessionInfo);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "GURaaS")
 		virtual void EndSession() {}
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "GURaaS")
 		virtual void Flush() {}
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite) FSessionInfo m_SessionInfo;
+	UPROPERTY(BlueprintReadWrite, Category = "GURaaS")
+	FSessionInfo m_SessionInfo;
 
 };
 

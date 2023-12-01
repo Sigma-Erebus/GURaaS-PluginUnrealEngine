@@ -2,8 +2,14 @@
 
 #include "GURaaS_API.h"
 
+#include "Dom/JsonObject.h"
 #include "HttpModule.h"
 #include "Interfaces/IHttpResponse.h"
+
+#include "Engine/World.h"
+#include "TimerManager.h"
+#include "Serialization/JsonWriter.h"
+#include "Serialization/JsonSerializer.h"
 
 DEFINE_LOG_CATEGORY(LogGLog);
 
@@ -82,7 +88,7 @@ void UGLogChannelGURaaS::Flush()
 	
 	//set request content
 	FString OutputString;
-	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
+	auto Writer = TJsonWriterFactory<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>::Create(&OutputString);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 	Request->SetContentAsString(OutputString);
 	

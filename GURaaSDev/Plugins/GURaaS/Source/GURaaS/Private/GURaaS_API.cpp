@@ -118,14 +118,19 @@ void UGLog_API::FlushChannels()
 
 FString UGLog_API::ConvertToString(EGURaaSVerboseLevel VerboseLevel)
 {
-	static UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EGURaaSVerboseLevel"));
-	
-	if (!EnumPtr)
-	{
-		return FString("Invalid");
-	}
 
-	return EnumPtr->GetDisplayNameTextByIndex((int32)VerboseLevel).ToString();
+	// static_assert( TIsUEnumClass< T >::Value, "'T' template parameter to EnumToString must be a valid UEnum" );
+   	
+	return StaticEnum< EGURaaSVerboseLevel >()->GetNameStringByValue( ( int64 ) VerboseLevel );
+
+	// static UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EGURaaSVerboseLevel"));
+	
+	// if (!EnumPtr)
+	// {
+	// 	return FString("Invalid");
+	// }
+
+	// return EnumPtr->GetDisplayNameTextByIndex((int32)VerboseLevel).ToString();
 }
 
 void UGLog_API::Reset()

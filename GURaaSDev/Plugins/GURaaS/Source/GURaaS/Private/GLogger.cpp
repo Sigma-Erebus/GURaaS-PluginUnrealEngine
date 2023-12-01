@@ -6,6 +6,7 @@
 #include "GURaaS_API.h"
 
 #include "misc/Guid.h"
+#include "Runtime/Launch/Resources/Version.h"
 
 bool UGLogger::IsSessionStarted()
 {
