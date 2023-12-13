@@ -1,6 +1,7 @@
 #include "GURaaS_Channel.h"
 
 #include "GURaaS_API.h"
+#include "GURaaS.h"
 
 #include "Dom/JsonObject.h"
 #include "HttpModule.h"
@@ -10,8 +11,6 @@
 #include "TimerManager.h"
 #include "Serialization/JsonWriter.h"
 #include "Serialization/JsonSerializer.h"
-
-DEFINE_LOG_CATEGORY(LogGLog);
 
 
 void UGLogChannel::StartSession(FSessionInfo SessionInfo)

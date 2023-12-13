@@ -1,14 +1,9 @@
 #pragma once
 
 #include "EVerboseLevel.h"
-
-
 #include "CoreMinimal.h"
 
-
 #include "GURaaS_Channel.generated.h"
-
-DECLARE_LOG_CATEGORY_EXTERN(LogGLog, Log, All)
 
 USTRUCT(Blueprintable)
 struct FSessionInfo

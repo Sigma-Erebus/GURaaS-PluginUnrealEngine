@@ -1,11 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "GURaaS_API.h"
+#include "GURaaS.h"
 #include "GURaaS_GameInstance.h"
 #include "GURaaS_Channel.h"
 #include "GLogger.h"
 
+#include "Dom/JsonObject.h"
+#include "HttpModule.h"
+#include "Interfaces/IHttpResponse.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -137,5 +140,63 @@ void UGLog_API::Reset()
 {
 	m_GameInstance = nullptr;
 }
+
+bool UGLog_API::GetLogsFromGURaaS(FString GameID, FString JSonQuery, const FGURaaSGetLogsDelegate& Delegate)
+{
+	auto Request = FHttpModule::Get().CreateRequest();
+	Request->SetURL("https://logs.service.guraas.com/v1/" + GameID + "/logs");
+	Request->SetVerb("POST");
+	Request->SetHeader("Content-Type", "application/json");
+
+	Request->SetContentAsString(JSonQuery);
+
+	auto ProcessResponse = [Delegate](FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded)
+	{
+		TArray<FString> Response;
+		if (!bSucceeded)
+		{
+			Delegate.ExecuteIfBound(false, MoveTemp(Response));
+			UE_LOG(LogGLog, Error, TEXT("GURaaS.GetLogs: Request failed"));
+			return;
+		}
+
+		if( !( HttpResponse->GetResponseCode() >= 200 && HttpResponse->GetResponseCode() < 300 ) )
+		{
+			Delegate.ExecuteIfBound(false, MoveTemp(Response));
+			UE_LOG(LogGLog, Error, TEXT("GURaaS.GetLogs: Request failed with code %d"), HttpResponse->GetResponseCode());
+			return;
+		}
+
+		FString JsonRaw = FString::Printf(TEXT("{\"data\": %s}"), *HttpResponse->GetContentAsString());
+
+		TSharedPtr<FJsonObject> JsonObject;
+		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonRaw);
+		if (!FJsonSerializer::Deserialize(Reader, JsonObject))
+		{
+			Delegate.ExecuteIfBound(false, MoveTemp(Response));
+			UE_LOG(LogGLog, Error, TEXT("GURaaS.GetLogs: Failed to deserialize response"));
+			return;
+		}
+
+		TArray<TSharedPtr<FJsonValue>> JsonArray = JsonObject->GetArrayField("data");
+
+		FString JsonString;
+		TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&JsonString);
+	
+		for (auto& JsonValue : JsonArray)
+		{
+			FJsonSerializer::Serialize((*JsonValue).AsObject().ToSharedRef(), Writer);
+			Response.Add(JsonString);
+		}
+
+		Delegate.ExecuteIfBound(true, MoveTemp(Response));
+
+		UE_LOG(LogGLog, Log, TEXT("GURaaS.GetLogs: Request succeeded"));
+	};
+
+	Request->OnProcessRequestComplete().BindLambda( ProcessResponse );
+	return Request->ProcessRequest();
+}
+
 
 

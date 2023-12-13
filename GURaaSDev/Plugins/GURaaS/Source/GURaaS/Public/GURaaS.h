@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogGLog, Log, All)
+
 class FGURaaSModule : public IModuleInterface
 {
 public:

@@ -10,6 +10,8 @@
 
 #define LOCTEXT_NAMESPACE "FGURaaSModule"
 
+DEFINE_LOG_CATEGORY(LogGLog);
+
 void FGURaaSModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module

@@ -6,10 +6,15 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "EVerboseLevel.h"
 
+#include "Dom/JsonObject.h"
+#include "HttpModule.h"
+
 #include "GURaaS_API.generated.h"
 
 class UGURaaSGameInstance;
 class UGLogChannel;
+
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FGURaaSGetLogsDelegate, bool, Success, const TArray<FString>&, Response);
 
 UCLASS()
 class GURAAS_API UGLog_API : public UBlueprintFunctionLibrary
@@ -45,6 +50,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GURaaS")
 		static FString ConvertToString(EGURaaSVerboseLevel VerboseLevel);
 
+UFUNCTION(BlueprintCallable, Category = "GURaaS")
+		static bool GetLogsFromGURaaS( FString GameID, FString JSonQuery, const FGURaaSGetLogsDelegate& Delegate);
 
 private:
 	friend class UGLoggerAuthorizedReset;
