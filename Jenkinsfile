@@ -86,30 +86,30 @@ def scanSFXFiles(String location)
 
 def PublishToGithub(String buildName, String location) 
 {
-    def sfxFiles = scanSFXFiles(location)
+    //def sfxFiles = scanSFXFiles(location)
 
     bat("gh release create ${buildName} -t \"${buildName}\" --draft --generate-notes")
 
-    for(file in sfxFiles)
-    {
-        bat("gh release upload ${buildName} \"${WORKSPACE}\\${location}\\sfx\\${file}\"")
-    }
+    //for(file in sfxFiles)
+    //{
+    bat("gh release upload ${buildName} \"${WORKSPACE}\\${location}\\${buildName}.zip\"")
+    //}
 }
 
 def PublishToNexus(boolean buseSFX, boolean bneedsPublishToGithub, String cUrl, String sbuildName, String location ) 
 {
     withCredentials([string(credentialsId: 'NEXUS_CREDENTIALS', variable: 'NEXUS_CREDENTIALS')])
     {
-        if( buseSFX || bneedsPublishToGithub)
-        {
-            // we need to upload several files
-            def sfxFiles = scanSFXFiles(location)
+        // if( buseSFX || bneedsPublishToGithub)
+        // {
+        //     // we need to upload several files
+        //     def sfxFiles = scanSFXFiles(location)
 
-            for(file in sfxFiles)
-            {
-                bat("\"${CUrl}\" -X POST \"http://localhost:8081/service/rest/v1/components?repository=UEGURaaS-Releases\" -H \"accept: application/json\" -H \"Authorization: Basic $NEXUS_CREDENTIALS\" -F \"raw.directory=${sbuildName}-packaged\" -F \"raw.asset1=@${WORKSPACE}\\${location}\\sfx\\${file}\" -F \"raw.asset1.filename=${file}\"")
-            }
-        }
+        //     for(file in sfxFiles)
+        //     {
+        //         bat("\"${CUrl}\" -X POST \"http://localhost:8081/service/rest/v1/components?repository=UEGURaaS-Releases\" -H \"accept: application/json\" -H \"Authorization: Basic $NEXUS_CREDENTIALS\" -F \"raw.directory=${sbuildName}-packaged\" -F \"raw.asset1=@${WORKSPACE}\\${location}\\sfx\\${file}\" -F \"raw.asset1.filename=${file}\"")
+        //     }
+        // }
 
         if ( !buseSFX )
         {
@@ -240,14 +240,14 @@ pipeline
                 {
                     try 
                     {
-                        if (useSFX || needsPublishToGithub) 
-                        {
-                            bat( "7z a -mx${zipCompressionLevel} -v${zipVolumeSize} -sfx -r \"${WORKSPACE}\\${localPackageFolder}\\sfx\\${buildName}.exe\" \"${WORKSPACE}\\${localBuildFolder}\\*\"  ")
-                        } 
+                       // if (useSFX || needsPublishToGithub) 
+                       // {
+                       //     bat( "7z a -mx${zipCompressionLevel} -v${zipVolumeSize} -sfx -r \"${WORKSPACE}\\${localPackageFolder}\\sfx\\${buildName}.exe\" \"${WORKSPACE}\\${localBuildFolder}\\*\"  ")
+                       // } 
 
                         if (!useSFX)
                         {
-                            bat( "7z a -tzip -mx${zipCompressionLevel} -r \"${WORKSPACE}\\${localPackageFolder}\\${buildName}\" \"${WORKSPACE}\\${localBuildFolder}\\*\" ")
+                            bat( "7z a -tzip -mx${zipCompressionLevel} -r \"${WORKSPACE}\\${localPackageFolder}\\${buildName}.zip\" \"${WORKSPACE}\\${localBuildFolder}\\*\" ")
                         }
                     }
                     catch (Exception e)

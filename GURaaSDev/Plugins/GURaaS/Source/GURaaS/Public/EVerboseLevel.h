@@ -2,7 +2,7 @@
 
 #include "EVerboseLevel.generated.h"
 
-UENUM()
+UENUM(BlueprintType)
 enum class EGURaaSVerboseLevel : uint8
 {
 	EGURaaS_VerboseLevel_None = 0 UMETA(DisplayName = "None"),
