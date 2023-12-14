@@ -10,6 +10,9 @@
 #include "HttpModule.h"
 #include "Interfaces/IHttpResponse.h"
 
+#include "Serialization/JsonWriter.h"
+#include "Serialization/JsonSerializer.h"
+
 #include "Kismet/GameplayStatics.h"
 
 UGURaaSGameInstance* UGLog_API::m_GameInstance = nullptr;
