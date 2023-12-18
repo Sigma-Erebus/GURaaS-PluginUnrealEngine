@@ -49,6 +49,7 @@ To log data to the GURaaS server you can use the `UGLog::Log(EGURaaSVerboseLevel
 
 Getting data from the GURaaS does not require you to have the logging API initialized. Getting the data is a single HTTP Post call to the GURaaS server. using `GetLogsFromGURaaS( FString GameID, FString JSonQuery, const FGURaaSGetLogsDelegate& Delegate)` Unreal will call the delegate when the data is received or if an error occurred. The data is returned as an TArray of FStrings in the log JSON format. 
 The query is a JSON string that can be used to filter the data. The query is a JSON object with the following fields:
+
 ```
 {
     "sessions_id": "74b4ee75-4494-5067-4d58-34a1793c6604" // unused
@@ -59,6 +60,7 @@ The query is a JSON string that can be used to filter the data. The query is a J
     "sdate": "2023-04-20 09:32:30.0"
     "edate": "2023-04-20 07:32:30.0"
 }```
+
 The database of GURaaS does not store verbose levels. This causes the mis-alignment of the field names.
 
 ### Custom Channels
