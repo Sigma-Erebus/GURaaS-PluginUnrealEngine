@@ -155,7 +155,7 @@ bool UGLog_API::GetLogsFromGURaaS(FString GameID, FString JSonQuery, const FGURa
 
 	auto ProcessResponse = [Delegate](FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded)
 	{
-		TArray<FString> Response;
+		TArray<FGURaaSLogEntry> Response;
 		if (!bSucceeded)
 		{
 			Delegate.ExecuteIfBound(false, MoveTemp(Response));
@@ -183,13 +183,18 @@ bool UGLog_API::GetLogsFromGURaaS(FString GameID, FString JSonQuery, const FGURa
 
 		TArray<TSharedPtr<FJsonValue>> JsonArray = JsonObject->GetArrayField("data");
 
-		FString JsonString;
-		TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&JsonString);
 	
 		for (auto& JsonValue : JsonArray)
 		{
-			FJsonSerializer::Serialize((*JsonValue).AsObject().ToSharedRef(), Writer);
-			Response.Add(JsonString);
+			FGURaaSLogEntry entry;
+			entry.Time = JsonValue->AsObject()->GetStringField("time");
+			entry.Tag1 = JsonValue->AsObject()->GetStringField("tag1");
+			entry.Tag2 = JsonValue->AsObject()->GetStringField("tag2");
+			entry.Tag3 = JsonValue->AsObject()->GetStringField("tag3");
+			entry.Tag4 = JsonValue->AsObject()->GetStringField("tag4");
+			entry.Data = JsonValue->AsObject()->GetStringField("data");
+
+			Response.Add(entry);
 		}
 
 		Delegate.ExecuteIfBound(true, MoveTemp(Response));

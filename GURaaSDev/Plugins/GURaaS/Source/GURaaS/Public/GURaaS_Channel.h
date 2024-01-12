@@ -58,6 +58,20 @@ public:
 
 };
 
+USTRUCT(Blueprintable)
+struct FGURaaSLogEntry{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(BlueprintReadOnly) FString Time;
+	UPROPERTY(BlueprintReadOnly) FString Tag1;
+	UPROPERTY(BlueprintReadOnly) FString Tag2;
+	UPROPERTY(BlueprintReadOnly) FString Tag3;
+	UPROPERTY(BlueprintReadOnly) FString Tag4;
+	UPROPERTY(BlueprintReadOnly) FString Data;
+};
+
 UCLASS(Blueprintable)
 class GURAAS_API UGLogChannel : public UObject
 {

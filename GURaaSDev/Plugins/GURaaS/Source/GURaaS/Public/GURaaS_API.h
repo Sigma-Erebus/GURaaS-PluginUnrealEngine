@@ -14,7 +14,7 @@
 class UGURaaSGameInstance;
 class UGLogChannel;
 
-DECLARE_DYNAMIC_DELEGATE_TwoParams(FGURaaSGetLogsDelegate, bool, Success, const TArray<FString>&, Response);
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FGURaaSGetLogsDelegate, bool, Success, const TArray<FGURaaSLogEntry>&, Response);
 
 UCLASS()
 class GURAAS_API UGLog_API : public UBlueprintFunctionLibrary
