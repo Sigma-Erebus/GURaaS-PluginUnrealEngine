@@ -64,12 +64,12 @@ struct FGURaaSLogEntry{
 
 public:
 
-	UPROPERTY(BlueprintReadOnly) FString Time;
-	UPROPERTY(BlueprintReadOnly) FString Tag1;
-	UPROPERTY(BlueprintReadOnly) FString Tag2;
-	UPROPERTY(BlueprintReadOnly) FString Tag3;
-	UPROPERTY(BlueprintReadOnly) FString Tag4;
-	UPROPERTY(BlueprintReadOnly) FString Data;
+	UPROPERTY(BlueprintReadOnly, Category = "GURaaS") FString Time;
+	UPROPERTY(BlueprintReadOnly, Category = "GURaaS") FString Tag1;
+	UPROPERTY(BlueprintReadOnly, Category = "GURaaS") FString Tag2;
+	UPROPERTY(BlueprintReadOnly, Category = "GURaaS") FString Tag3;
+	UPROPERTY(BlueprintReadOnly, Category = "GURaaS") FString Tag4;
+	UPROPERTY(BlueprintReadOnly, Category = "GURaaS") FString Data;
 };
 
 UCLASS(Blueprintable)
