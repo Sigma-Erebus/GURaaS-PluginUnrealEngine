@@ -41,7 +41,7 @@ try {
         }
     }
 
-    //node(Node) {
+    node(Node) {
         script {
             stage('Build Plugin GURaaS') {
                 try {
@@ -67,7 +67,7 @@ try {
                 }
             }
         }
-    //}
+    }
 
     stage('Deploy') {
         node(Node) {
