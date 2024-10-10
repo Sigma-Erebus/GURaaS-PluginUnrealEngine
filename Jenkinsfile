@@ -9,6 +9,17 @@ node('WindowsNode') {
     WorkingDir = env.WORKSPACE
 }
 
+// Config section
+
+String gitHubRepo = "BredaUniversityResearch/GURaaS-PluginUnrealEngine"
+String gitHubBranch = "main"
+String discordFriendlyName = "GURaaS-Plugin-Build"
+
+String nexusRepo = "UEGURaaS-Releases"
+
+String projectName = "GURaaSDev"
+String pluginName = "GURaaS"
+
 String discordWebhook = 'MONITORING_DISCORD_WEBHOOK'
 
 Boolean cleanupBefore = false
@@ -31,7 +42,7 @@ try {
             }
         }
         node(Node) {
-            git.sparseCheckout("https://github.com/BredaUniversityResearch/GURaaS-PluginUnrealEngine", "main", "GURaaSDev", 'CRADLE_WEBMASTER_CREDENTIALS')
+            git.sparseCheckout("https://github.com/${gitHubRepo}", "${gitHubBranch}", "GURaaSDev", 'CRADLE_WEBMASTER_CREDENTIALS')
             try {
                 tags = git.fetchTags('CRADLE_WEBMASTER_CREDENTIALS')
             } catch (Exception e) {
@@ -49,8 +60,8 @@ try {
                 parameters: [
                     string(name: 'NODE', value: Node),
                     string(name: 'WORKING_DIR', value: WorkingDir),
-                    string(name: 'PROJECTPATH', value: "%CD%\\GURaaSDev\\GURaaSDev.uproject"),
-                    string(name: 'PLUGINPATH', value: "%CD%\\GURaaSDev\\Plugins\\GURaaS\\GURaaS.uplugin"),
+                    string(name: 'PROJECTPATH', value: "%CD%\\${projectName}\\${projectName}.uproject"),
+                    string(name: 'PLUGINPATH', value: "%CD%\\${projectName}\\Plugins\\${pluginName}\\${pluginName}.uplugin"),
                     string(name: 'OUTPUTDIR', value: "%CD%\\Output"),
                     //choice params
                     string(name: 'UNREAL_VERSIONS', value: '2'),
@@ -93,10 +104,10 @@ try {
                     String buildName = sanitizeinput.buildName("GURaaS-${version}", "${currentBuild.number}", commit, "zip")
                     if (splitArchive) {
                         zip.packSplitArchive("./Output/${version}", buildName, "2G")
-                        nexus.upload("UEGURaaS-Releases", buildName, "application/x-zip-compressed", "Windows", 'NEXUS_CREDENTIALS')
+                        nexus.upload("${nexusRepo}", buildName, "application/x-zip-compressed", "Windows", 'NEXUS_CREDENTIALS')
                     } else {
                         zip.pack("./Output/${version}", buildName)
-                        nexus.upload("UEGURaaS-Releases", buildName, "application/x-zip-compressed", "Windows", 'NEXUS_CREDENTIALS')
+                        nexus.upload("${nexusRepo}", buildName, "application/x-zip-compressed", "Windows", 'NEXUS_CREDENTIALS')
                     }
                 }
             }
@@ -129,9 +140,9 @@ try {
                             String downloadLinks = ""
                             for (String version : pluginVersions) {
                                 buildName = sanitizeinput.buildName("GURaaS-${version}", "${currentBuild.number}", commit, "zip")
-                                downloadLinks += "[Download Windows ${version} Build from Nexus](https://nexus.cradle.buas.nl/#browse/browse:UEGURaaS-Releases:Windows%%2F${buildName})\n"
+                                downloadLinks += "[Download Windows ${version} Build from Nexus](https://nexus.cradle.buas.nl/#browse/browse:${nexusRepo}:Windows%%2F${buildName})\n"
                             }
-                            discord.succeeded(discordWebhook, "GURaaS-Plugin-Build", "${downloadLinks}")
+                            discord.succeeded(discordWebhook, "${discordFriendlyName}", "${downloadLinks}")
                             break
                         case "UNSTABLE":
                             echo "Build was unstable"
@@ -147,9 +158,9 @@ try {
                             String downloadLinks = ""
                             for (String version : pluginVersions) {
                                 buildName = sanitizeinput.buildName("GURaaS-${version}", "${currentBuild.number}", commit, "zip")
-                                downloadLinks += "[Download Windows ${version} Build from Nexus](https://nexus.cradle.buas.nl/#browse/browse:UEGURaaS-Releases:Windows%%2F${buildName})\n"
+                                downloadLinks += "[Download Windows ${version} Build from Nexus](https://nexus.cradle.buas.nl/#browse/browse:${nexusRepo}:Windows%%2F${buildName})\n"
                             }
-                            discord.succeeded(discordWebhook, "GURaaS-Plugin-Build", "${downloadLinks}")
+                            discord.succeeded(discordWebhook, "${discordFriendlyName}", "${downloadLinks}")
                             break
                     }
                 }
