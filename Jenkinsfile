@@ -106,8 +106,12 @@ try {
                     }
                     String buildName = sanitizeinput.buildName("GURaaS-${version}", "${currentBuild.number}", commit, "zip")
                     if (splitArchive) {
-                        zip.packSplitArchive("./Output/${version}", buildName, "2G")
-                        nexus.upload("${nexusRepo}", buildName, "application/x-zip-compressed", "Windows", 'NEXUS_CREDENTIALS')
+                        zip.packSplitArchive("./Output/${version}", buildName, "1920M")
+                        def fileParts = bat(label: "Collect file parts", script: "@dir /b /a-d Output\\${version}\\${buildName}*", returnStdout: true).split("\r\n")
+                        for (String filePart : fileParts) {
+                            nexus.upload("${nexusRepo}", filePart, "application/x-zip-compressed", "Windows", 'NEXUS_CREDENTIALS')
+                        }
+                        //nexus.upload("${nexusRepo}", buildName, "application/x-zip-compressed", "Windows", 'NEXUS_CREDENTIALS')
                     } else {
                         zip.pack("./Output/${version}", buildName)
                         nexus.upload("${nexusRepo}", buildName, "application/x-zip-compressed", "Windows", 'NEXUS_CREDENTIALS')
