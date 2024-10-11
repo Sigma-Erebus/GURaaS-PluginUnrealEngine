@@ -22,7 +22,7 @@ String pluginName = "GURaaS"
 
 String discordWebhook = 'MONITORING_DISCORD_WEBHOOK'
 
-Boolean splitArchive = true
+Boolean splitArchive = false
 
 // End of Config section
 
