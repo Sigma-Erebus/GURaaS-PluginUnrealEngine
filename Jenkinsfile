@@ -32,8 +32,10 @@ Boolean cleanupAfter = false
 failureReason = [:]
 String tags = ""
 String commit = ""
+String messageIfStageFailure = ""
 try {
     stage('Clone') {
+        messageIfStageFailure = "Failed to clean workspace"
         if (cleanupBefore) {
             node(Node) {
                 dir(WorkingDir) {
@@ -44,6 +46,7 @@ try {
                 cleanWs()
             }
         }
+        messageIfStageFailure = "Failed to clone repositories"
         node(Node) {
             git.sparseCheckout("https://github.com/${gitHubRepo}", "${gitHubBranch}", "GURaaSDev", 'CRADLE_WEBMASTER_CREDENTIALS')
             try {
@@ -58,6 +61,7 @@ try {
     node(Node) {
         script {
             stage('Build Plugin GURaaS') {
+                messageIfStageFailure = "Failed to build"
                 try {
                 build job: 'Library/WindowsUnrealPluginBuild',
                 parameters: [
@@ -84,6 +88,7 @@ try {
     }
 
     stage('Deploy') {
+        messageIfStageFailure = "Failed to deploy"
         node(Node) {
             script {
                 def pluginVersions = bat(label: "Collect folders built for Project", script: "@dir /b /ad Output\\UE_*", returnStdout: true).split("\r\n")
@@ -131,7 +136,7 @@ try {
     }
     node(Node) {
         script {
-            failureReason["MainBuild"] = "${e}"
+            failureReason["MainBuild"] = "${messageIfStageFailure}\n\n${e}"
             //discord.failed(discordWebhook, "PlanV-Plugin-Build", "${e}")
         }
     }
